@@ -1,0 +1,84 @@
+.mensura {
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (max-width: 767px) {
+  .mensura {
+    height: 450px;
+  }
+}
+
+.valuaciones {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.botones {
+  display: flex;
+  margin: 5px 0px;
+}
+
+.btn {
+  width: 150px;
+  margin-right: 5px;
+}
+
+.recalcular {
+  display: none;
+}
+
+.elemento {
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.elemento input[type="checkbox"] {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+label {
+  display: inline-block;
+  width: 350px;
+  text-align: left;
+}
+
+input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+}
+
+input[type="number"] {
+  padding-left: 10px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-around;
+  background-color: #bcbcbc;
+  margin-bottom: 5px;
+  padding: 7px;
+}
+
+td {
+  text-align: center;
+}
+
+.resultados-tabla {
+  display: none;
+}
+
+.resultadosValuaciones-tabla {
+  display: none;
+}
+
+.texto-izquierda {
+  text-align: left;
+}
