@@ -1,0 +1,40 @@
+
+----- Pasos Integración de nuevo Elemento -----
+
+1) Agregar las etiquetas correspondientes al elemento nuevo en index.html 
+
+Ejemplo:
+
+<div class="elemento">
+    <label for="id_elemento">Texto visible</label>
+    <input type="number" id="id_elemento" min="0" />
+</div>
+
+2) Agregar los modulos corespondientes al nuevo elemento en calculadora.js
+
+Ejemplo: 
+
+// Numero articulo) Descripcion -> valor modular
+const m_nombre = valor modular * multiplicador;
+
+3) Obtener los valores ingresado en el elemento. Agregar el nuevo elemento en la funcion obtenerValoresEntrada()
+
+Ejemplo:
+
+const nombre_elemento = parseInt(document.getElementById("id_elemento").value) || 0;
+
+completar return:
+return {..., nombre_elemento};
+
+4) Agregar al calculo el nuevo elemento. 
+4.a) Dentro de los parametros de la funcion calcularTotal() agregar el nombre del nuevo elemento.
+
+Ejemplo:
+
+function calcularTotal({..., nombre_elemento})
+
+4.b) Agregar la suma del valor modular.
+
+Ejemplo:
+
+let total = ... + m_nombre * nombre_elemento;
