@@ -16,7 +16,7 @@ const m_ufuncional = 500 * multiplicador;
 // 1.4) Afectacion de derecho real de cementerios privados -> M100
 const m_cementarios = 100 * multiplicador;
 // 1.8.1) Por estudio de parcela/unidad funcional -> M1500
-const m_estudio = 1500 * multiplicador;
+const m_estado = 1500 * multiplicador;
 // 1.9) Solicitud de estudio de titulo y antecedente dominial, por parcela -> M700
 const m_solicitud = 700 * multiplicador;
 // Declaracion jurada individual formato papel -> M200
@@ -78,13 +78,13 @@ function visualizarTotal(total, abonar) {
  * @param {number} cantidad - La cantidad ingresada en el formulario.
  * @param {number} valorModular - El valor modular de cada elemento de la fila.
  */
-function agregarFila(etiqueta, cantidad, valorModular, tabla, parcelas = 1) {
+function agregarFila(etiqueta, cantidad, valorModular, tabla) {
   const fila = document.createElement("tr");
-  fila.innerHTML = `
+  fila.innerHTML = ` 
         <th class="texto-izquierda">${etiqueta}</th>
         <td>${cantidad}</td>
         <td>${formatoMoneda(valorModular)}</td>
-        <td>${formatoMoneda(valorModular * cantidad * parcelas)}</td>
+        <td>${formatoMoneda(valorModular * cantidad)}</td>
       `;
   tabla.appendChild(fila);
 }
@@ -126,6 +126,7 @@ function obtenerValoresEntrada() {
   const funcional = parseInt(document.getElementById("ufuncional").value) || 0;
   const cementerios =
     parseInt(document.getElementById("cementerios").value) || 0;
+  const estado = parseInt(document.getElementById("estado").value) || 0;
   const preferencial = document.getElementById("preferencial").checked;
   const parcelas = origen + resultante;
 
@@ -135,6 +136,7 @@ function obtenerValoresEntrada() {
     ddjj,
     funcional,
     cementerios,
+    estado,
     preferencial,
     parcelas,
   };
@@ -151,20 +153,23 @@ function calcularTotal({
   preferencial,
   funcional,
   cementerios,
+  estado,
 }) {
-  let total =
-    ddjj * m_ddjj +
-    funcional * m_ufuncional +
-    m_cementarios * cementerios * parcelas;
+  let total = ddjj * m_ddjj + funcional * m_ufuncional;
+  total += m_cementarios * cementerios * parcelas; // caso especial, tener en cuenta
+  total += m_estado * estado * funcional * parcelas; // caso especial, tener en cuenta
+
   if (parcelas != 0) total += parcelasValorModular(parcelas) * parcelas;
   if (preferencial) total *= 1 + porc_preferencial / 100;
 
   return total;
 }
 
-function totalPreferencial(parcelas, ddjj, funcional, cementerios) {
-  let total =
-    ddjj * m_ddjj + funcional * m_ufuncional + m_cementarios * cementerios;
+function totalPreferencial(parcelas, ddjj, funcional, cementerios, estado) {
+  let total = ddjj * m_ddjj + funcional * m_ufuncional;
+  total += m_cementarios * cementerios * parcelas; // caso especial, tener en cuenta
+  total += m_estado * estado * funcional * parcelas; // caso especial, tener en cuenta
+
   if (parcelas != 0) total += parcelasValorModular(parcelas) * parcelas;
   return (total * porc_preferencial) / 100;
 }
@@ -176,44 +181,54 @@ function totalPreferencial(parcelas, ddjj, funcional, cementerios) {
  * @param {object} valoresEntrada - Objeto con los valores de entrada del formulario.
  */
 function crearTablaResultados(valoresEntrada) {
-  const {
-    origen,
-    resultante,
-    ddjj,
-    funcional,
-    cementerios,
-    preferencial,
-    parcelas,
-  } = valoresEntrada;
-  const valor_modulo_parcelas = parcelasValorModular(parcelas);
+  const valor_modulo_parcelas = parcelasValorModular(valoresEntrada.parcelas);
 
   agregarFila(
     "Parcelas Origen",
-    origen,
+    valoresEntrada.origen,
     valor_modulo_parcelas,
     resultadosMensura
   );
   agregarFila(
     "Parcelas Resultante",
-    resultante,
+    valoresEntrada.resultante,
     valor_modulo_parcelas,
     resultadosMensura
   );
-  agregarFila("Unidad Funcional", funcional, m_ufuncional, resultadosMensura);
+  agregarFila(
+    "Unidad Funcional",
+    valoresEntrada.funcional,
+    m_ufuncional,
+    resultadosMensura
+  );
   agregarFila(
     "Cementarios Privados",
-    cementerios,
+    valoresEntrada.cementerios,
     m_cementarios,
-    resultadosMensura,
-    parcelas
+    resultadosMensura
   );
-  agregarFila("Declaracion Jurada", ddjj, m_ddjj, resultadosMensura);
+  agregarFila(
+    "Declaracion Jurada",
+    valoresEntrada.ddjj,
+    m_ddjj,
+    resultadosMensura
+  );
 
   const montoPreferencial = preferencial
-    ? totalPreferencial(parcelas, ddjj, funcional, cementerios * parcelas)
+    ? totalPreferencial(
+        valoresEntrada.parcelas,
+        valoresEntrada.ddjj,
+        valoresEntrada.funcional,
+        valoresEntrada.cementerios,
+        valoresEntrada.estado
+      )
     : 0;
 
-  agregarFilaPreferencial(preferencial, montoPreferencial, resultadosMensura);
+  agregarFilaPreferencial(
+    valoresEntrada.preferencial,
+    montoPreferencial,
+    resultadosMensura
+  );
 }
 
 function mostrarTotalMensura() {
