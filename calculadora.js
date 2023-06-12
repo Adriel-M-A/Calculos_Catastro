@@ -211,7 +211,18 @@ function crearTablaResultados(valoresEntrada) {
     Total(valoresEntrada.cementerios, m_cementarios, valor_modulo_parcelas),
     resultadosMensura
   );
-
+  agregarFila(
+    "Estado Parcelario",
+    valoresEntrada.estado,
+    m_estado,
+    Total(
+      valoresEntrada.estado,
+      m_estado,
+      valor_modulo_parcelas,
+      valoresEntrada.ufuncional
+    ),
+    resultadosMensura
+  );
   agregarFila(
     "Declaracion Jurada",
     valoresEntrada.ddjj,
